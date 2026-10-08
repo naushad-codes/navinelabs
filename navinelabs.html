@@ -1,0 +1,2342 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NaviNeLabs — Open-source infrastructure for production AI applications." />
+  <meta name="theme-color" content="#050505" />
+  <title>NaviNeLabs — Open-source AI infrastructure</title>
+
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-soft: #0a0a0a;
+      --card: #0d0d0d;
+      --card-hover: #111111;
+      --border: rgba(255, 255, 255, 0.09);
+      --border-bright: rgba(255, 255, 255, 0.16);
+      --text: #f5f5f5;
+      --muted: #929292;
+      --muted-2: #686868;
+      --white: #ffffff;
+      --green: #9cff00;
+      --green-soft: rgba(156, 255, 0, 0.10);
+      --blue: #6ea8ff;
+      --max: 1180px;
+      --radius: 18px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(156, 255, 0, 0.07), transparent 28%),
+        radial-gradient(circle at 100% 50%, rgba(80, 120, 255, 0.04), transparent 25%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .container {
+      width: min(calc(100% - 40px), var(--max));
+      margin: 0 auto;
+    }
+
+    /* =========================
+       NAVBAR
+    ========================= */
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(5, 5, 5, 0.76);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav-inner {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 750;
+      letter-spacing: -0.6px;
+    }
+
+    .logo-mark {
+      width: 31px;
+      height: 31px;
+      border: 1px solid rgba(156,255,0,0.45);
+      background: var(--green-soft);
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-mark::before {
+      content: "";
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 20px rgba(156,255,0,0.8);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .nav-links a {
+      transition: color .2s ease;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .github-link {
+      color: #aaa;
+      font-size: 14px;
+      padding: 9px 13px;
+    }
+
+    .github-link:hover {
+      color: white;
+    }
+
+    .nav-cta {
+      padding: 9px 15px;
+      border-radius: 9px;
+      background: white;
+      color: black;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      background: #ededed;
+    }
+
+    .menu-btn {
+      display: none;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      padding: 170px 0 100px;
+      position: relative;
+      text-align: center;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: .25;
+      background-image:
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 65px 65px;
+      mask-image: linear-gradient(to bottom, black, transparent 75%);
+      -webkit-mask-image: linear-gradient(to bottom, black, transparent 75%);
+    }
+
+    .announcement {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(156,255,0,.18);
+      background: rgba(156,255,0,.055);
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: #c8eaa0;
+      font-size: 12px;
+      margin-bottom: 27px;
+    }
+
+    .announcement-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+    }
+
+    .hero h1 {
+      max-width: 930px;
+      margin: auto;
+      font-size: clamp(48px, 7vw, 86px);
+      line-height: .98;
+      letter-spacing: -5px;
+      font-weight: 780;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(120deg, #fff 15%, #9cff00 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      max-width: 680px;
+      margin: 28px auto 0;
+      color: #969696;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 35px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 47px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: all .2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: white;
+      color: black;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 35px rgba(255,255,255,.08);
+    }
+
+    .btn-secondary {
+      border: 1px solid var(--border-bright);
+      color: white;
+      background: rgba(255,255,255,.02);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,.06);
+      transform: translateY(-2px);
+    }
+
+    .terminal {
+      max-width: 700px;
+      margin: 60px auto 0;
+      text-align: left;
+      border: 1px solid var(--border);
+      background: #090909;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow:
+        0 30px 100px rgba(0,0,0,.55),
+        0 0 80px rgba(156,255,0,.025);
+    }
+
+    .terminal-top {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border);
+      background: #0c0c0c;
+    }
+
+    .terminal-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #333;
+    }
+
+    .terminal-title {
+      margin-left: auto;
+      margin-right: auto;
+      transform: translateX(-12px);
+      color: #555;
+      font-size: 11px;
+    }
+
+    .terminal-code {
+      padding: 22px 24px 25px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 2;
+      color: #aaa;
+    }
+
+    .code-green {
+      color: var(--green);
+    }
+
+    .code-white {
+      color: white;
+    }
+
+    .code-blue {
+      color: #8ab4ff;
+    }
+
+    /* =========================
+       TRUST BAR
+    ========================= */
+
+    .trust {
+      padding: 22px 0 75px;
+    }
+
+    .trust-inner {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 25px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 35px;
+      flex-wrap: wrap;
+      color: #666;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .trust-inner span {
+      white-space: nowrap;
+    }
+
+    /* =========================
+       GENERAL SECTIONS
+    ========================= */
+
+    section {
+      padding: 105px 0;
+    }
+
+    .section-label {
+      color: var(--green);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 15px;
+    }
+
+    .section-heading {
+      font-size: clamp(34px, 5vw, 56px);
+      letter-spacing: -2.7px;
+      line-height: 1.04;
+      max-width: 750px;
+    }
+
+    .section-description {
+      color: #858585;
+      font-size: 16px;
+      max-width: 620px;
+      margin-top: 18px;
+      line-height: 1.75;
+    }
+
+    /* =========================
+       PROBLEM
+    ========================= */
+
+    .problem {
+      border-top: 1px solid var(--border);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: center;
+    }
+
+    .problem-list {
+      margin-top: 30px;
+      display: grid;
+      gap: 11px;
+    }
+
+    .problem-item {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.018);
+      border-radius: 11px;
+      padding: 15px 17px;
+      color: #aaa;
+      font-size: 14px;
+      display: flex;
+      gap: 11px;
+      align-items: center;
+    }
+
+    .problem-item::before {
+      content: "×";
+      color: #ff6666;
+      font-size: 18px;
+    }
+
+    .problem-right {
+      position: relative;
+    }
+
+    .chaos-box {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 27px;
+      background: #090909;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chaos-box::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -100px;
+      bottom: -100px;
+      background: rgba(156,255,0,.06);
+      filter: blur(60px);
+      border-radius: 50%;
+    }
+
+    .chaos-title {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 22px;
+      font-family: monospace;
+    }
+
+    .chaos-lines {
+      display: grid;
+      gap: 12px;
+    }
+
+    .chaos-line {
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 13px;
+      color: #888;
+      font-family: monospace;
+      font-size: 12px;
+      background: #0c0c0c;
+    }
+
+    .arrow {
+      text-align: center;
+      color: var(--green);
+      font-size: 18px;
+      margin: 4px 0;
+    }
+
+    /* =========================
+       FEATURES
+    ========================= */
+
+    .features {
+      border-top: 1px solid var(--border);
+    }
+
+    .features-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      align-items: end;
+      margin-bottom: 50px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+    }
+
+    .feature-card {
+      min-height: 240px;
+      padding: 25px;
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, #0d0d0d, #080808);
+      border-radius: var(--radius);
+      transition: border-color .25s ease, transform .25s ease, background .25s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-bright);
+      transform: translateY(-4px);
+      background: var(--card-hover);
+    }
+
+    .feature-number {
+      color: #555;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      margin: 22px 0 19px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(156,255,0,.15);
+      background: rgba(156,255,0,.06);
+      color: var(--green);
+      font-size: 18px;
+    }
+
+    .feature-card h3 {
+      font-size: 17px;
+      letter-spacing: -.3px;
+      margin-bottom: 9px;
+    }
+
+    .feature-card p {
+      color: #777;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    /* =========================
+       DASHBOARD
+    ========================= */
+
+    .dashboard-section {
+      border-top: 1px solid var(--border);
+    }
+
+    .dashboard {
+      margin-top: 55px;
+      border: 1px solid var(--border-bright);
+      border-radius: 18px;
+      background: #080808;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,.4);
+    }
+
+    .dashboard-top {
+      height: 48px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 17px;
+      gap: 8px;
+      background: #0b0b0b;
+    }
+
+    .dashboard-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #333;
+    }
+
+    .dashboard-url {
+      margin-left: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      color: #555;
+      font-size: 10px;
+      font-family: monospace;
+      flex: 1;
+      max-width: 450px;
+    }
+
+    .dashboard-body {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      min-height: 450px;
+    }
+
+    .dashboard-sidebar {
+      border-right: 1px solid var(--border);
+      padding: 20px 12px;
+    }
+
+    .sidebar-logo {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 25px;
+      padding: 0 9px;
+    }
+
+    .sidebar-group {
+      margin-bottom: 21px;
+    }
+
+    .sidebar-title {
+      color: #4d4d4d;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 9px;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-item {
+      padding: 8px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 2px;
+    }
+
+    .sidebar-item.active {
+      color: white;
+      background: rgba(156,255,0,.07);
+    }
+
+    .dashboard-main {
+      padding: 27px;
+    }
+
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 23px;
+    }
+
+    .dash-header h3 {
+      font-size: 21px;
+      letter-spacing: -.7px;
+    }
+
+    .dash-header p {
+      color: #555;
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .period {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #777;
+      padding: 6px 9px;
+      font-size: 10px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--border);
+      background: #0c0c0c;
+      border-radius: 9px;
+      padding: 16px;
+    }
+
+    .metric-label {
+      color: #555;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+
+    .metric-value {
+      font-size: 23px;
+      margin-top: 6px;
+      font-weight: 650;
+      letter-spacing: -1px;
+    }
+
+    .metric-change {
+      color: var(--green);
+      font-size: 9px;
+      margin-top: 4px;
+    }
+
+    .chart {
+      margin-top: 10px;
+      height: 220px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        #0c0c0c;
+      background-size: 100% 44px, 70px 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-label {
+      position: absolute;
+      top: 14px;
+      left: 15px;
+      font-size: 10px;
+      color: #555;
+    }
+
+    .chart-line {
+      position: absolute;
+      left: 3%;
+      right: 3%;
+      top: 40%;
+      height: 45%;
+    }
+
+    .chart-line svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .chart-line polyline {
+      fill: none;
+      stroke: #9cff00;
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* =========================
+       INTEGRATIONS
+    ========================= */
+
+    .integrations {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .integration-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 42px;
+    }
+
+    .integration {
+      border: 1px solid var(--border);
+      background: #0b0b0b;
+      border-radius: 9px;
+      padding: 12px 18px;
+      color: #aaa;
+      font-size: 13px;
+      transition: all .2s ease;
+    }
+
+    .integration:hover {
+      color: white;
+      border-color: var(--border-bright);
+      transform: translateY(-2px);
+    }
+
+    /* =========================
+       OPEN SOURCE
+    ========================= */
+
+    .opensource {
+      border-top: 1px solid var(--border);
+    }
+
+    .opensource-box {
+      border: 1px solid var(--border-bright);
+      border-radius: 22px;
+      padding: 60px;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(156,255,0,.07), transparent 30%),
+        #090909;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 60px;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .opensource-box h2 {
+      font-size: clamp(35px, 5vw, 55px);
+      letter-spacing: -2.5px;
+      line-height: 1.05;
+    }
+
+    .opensource-box p {
+      color: #818181;
+      max-width: 580px;
+      margin-top: 17px;
+      font-size: 15px;
+    }
+
+    .github-card {
+      border: 1px solid var(--border);
+      background: #0d0d0d;
+      border-radius: 14px;
+      padding: 23px;
+    }
+
+    .github-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .github-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .github-star {
+      color: var(--green);
+      font-size: 12px;
+    }
+
+    .github-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .github-stat {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .github-stat strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .github-stat span {
+      color: #555;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    /* =========================
+       PRICING
+    ========================= */
+
+    .pricing {
+      border-top: 1px solid var(--border);
+    }
+
+    .pricing-header {
+      text-align: center;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .pricing-header .section-description {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .pricing-grid {
+      margin-top: 52px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .price-card {
+      border: 1px solid var(--border);
+      background: #0a0a0a;
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+    }
+
+    .price-card.featured {
+      border-color: rgba(156,255,0,.35);
+      box-shadow: 0 0 60px rgba(156,255,0,.035);
+    }
+
+    .popular {
+      position: absolute;
+      top: -11px;
+      right: 17px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--green);
+      color: #080808;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+    }
+
+    .price-name {
+      color: #aaa;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .price {
+      margin-top: 15px;
+      font-size: 35px;
+      font-weight: 750;
+      letter-spacing: -1.5px;
+    }
+
+    .price span {
+      font-size: 12px;
+      color: #555;
+      font-weight: 400;
+    }
+
+    .price-description {
+      color: #666;
+      font-size: 11px;
+      min-height: 42px;
+      margin-top: 5px;
+    }
+
+    .price-btn {
+      width: 100%;
+      margin-top: 20px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #111;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .price-card.featured .price-btn {
+      background: white;
+      color: black;
+      border-color: white;
+    }
+
+    .price-features {
+      list-style: none;
+      margin-top: 24px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .price-features li {
+      color: #777;
+      font-size: 11px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .price-features li::before {
+      content: "✓";
+      color: var(--green);
+    }
+
+    /* =========================
+       FAQ
+    ========================= */
+
+    .faq {
+      border-top: 1px solid var(--border);
+    }
+
+    .faq-wrap {
+      max-width: 800px;
+      margin: 50px auto 0;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-question {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: white;
+      padding: 21px 0;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .faq-plus {
+      color: #666;
+      font-size: 20px;
+      transition: transform .2s ease;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+      color: #777;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .faq-answer-inner {
+      padding: 0 35px 20px 0;
+    }
+
+    .faq-item.open .faq-plus {
+      transform: rotate(45deg);
+      color: var(--green);
+    }
+
+    /* =========================
+       FINAL CTA
+    ========================= */
+
+    .final-cta {
+      padding: 120px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .final-cta h2 {
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1;
+      letter-spacing: -4px;
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .final-cta p {
+      max-width: 550px;
+      color: #777;
+      margin: 20px auto 30px;
+      font-size: 15px;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-copy {
+      color: #4f4f4f;
+      font-size: 11px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      color: #666;
+      font-size: 11px;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    /* =========================
+       SCROLL REVEAL
+    ========================= */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 1000px) {
+      .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .opensource-box {
+        grid-template-columns: 1fr;
+      }
+
+      .problem-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-body {
+        grid-template-columns: 150px 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        width: min(calc(100% - 28px), var(--max));
+      }
+
+      .nav-links,
+      .nav-actions {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .mobile-menu {
+        display: none;
+        padding: 10px 0 18px;
+        border-top: 1px solid var(--border);
+      }
+
+      .mobile-menu.active {
+        display: grid;
+      }
+
+      .mobile-menu a {
+        padding: 12px 0;
+        color: #aaa;
+        font-size: 14px;
+      }
+
+      .hero {
+        padding: 140px 0 70px;
+      }
+
+      .hero h1 {
+        letter-spacing: -3px;
+      }
+
+      .hero-subtitle {
+        font-size: 15px;
+      }
+
+      section {
+        padding: 75px 0;
+      }
+
+      .features-header {
+        display: block;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .opensource-box {
+        padding: 30px;
+      }
+
+      .dashboard-body {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-sidebar {
+        display: none;
+      }
+
+      .dashboard-main {
+        padding: 16px;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .trust-inner {
+        gap: 17px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .final-cta h2 {
+        letter-spacing: -2.5px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .hero h1 {
+        font-size: 46px;
+      }
+
+      .terminal-code {
+        font-size: 11px;
+        padding: 17px;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .metric-value {
+        font-size: 19px;
+      }
+
+      .opensource-box {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       NAVBAR
+  ========================== -->
+
+  <nav>
+    <div class="container">
+      <div class="nav-inner">
+
+        <a href="#" class="logo">
+          <span class="logo-mark"></span>
+          NaviNeLabs
+        </a>
+
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#developers">Developers</a>
+          <a href="#opensource">Open Source</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+
+        <div class="nav-actions">
+          <a href="https://github.com/" target="_blank" class="github-link">
+            GitHub ↗
+          </a>
+          <a href="#pricing" class="nav-cta">
+            Get Started
+          </a>
+        </div>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+          ☰
+        </button>
+
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#features">Features</a>
+        <a href="#developers">Developers</a>
+        <a href="#opensource">Open Source</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://github.com/" target="_blank">GitHub ↗</a>
+      </div>
+
+    </div>
+  </nav>
+
+
+  <!-- =========================
+       HERO
+  ========================== -->
+
+  <header class="hero">
+    <div class="hero-grid"></div>
+
+    <div class="container">
+
+      <div class="announcement">
+        <span class="announcement-dot"></span>
+        Open-source AI infrastructure
+      </div>
+
+      <h1>
+        Build AI apps.<br />
+        <span>Own the infrastructure.</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        NaviNeLabs is the open-source control plane for production AI.
+        Connect models, build agents, manage prompts, monitor costs,
+        evaluate responses, and deploy — from one place.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#pricing" class="btn btn-primary">
+          Start Building →
+        </a>
+
+        <a href="#opensource" class="btn btn-secondary">
+          ★ View on GitHub
+        </a>
+      </div>
+
+      <div class="terminal reveal">
+        <div class="terminal-top">
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-title">terminal</span>
+        </div>
+
+        <div class="terminal-code">
+          <div>
+            <span class="code-green">$</span>
+            <span class="code-white"> npx navinelabs init</span>
+          </div>
+
+          <div>
+            <span class="code-green">✓</span>
+            Initializing AI infrastructure...
+          </div>
+
+          <div>
+            <span class="code-green">✓</span>
+            Model gateway connected
+          </div>
+
+          <div>
+            <span class="code-green">✓</span>
+            Observability enabled
+          </div>
+
+          <div>
+            <span class="code-green">✓</span>
+            Ready to build
+          </div>
+
+          <div style="margin-top:8px;">
+            <span class="code-blue">→</span>
+            <span class="code-white"> Your AI infrastructure is ready.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- =========================
+       TRUST / ECOSYSTEM
+  ========================== -->
+
+  <div class="trust">
+    <div class="container">
+      <div class="trust-inner">
+        <span>Open Source</span>
+        <span>Self Hosted</span>
+        <span>Developer First</span>
+        <span>Model Agnostic</span>
+        <span>Production Ready</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================
+       PROBLEM
+  ========================== -->
+
+  <section class="problem">
+    <div class="container">
+
+      <div class="problem-grid">
+
+        <div class="reveal">
+          <div class="section-label">01 / The problem</div>
+
+          <h2 class="section-heading">
+            AI prototypes are easy.
+            Production AI isn't.
+          </h2>
+
+          <p class="section-description">
+            Building a demo takes an API call. Building a reliable AI
+            product means stitching together models, prompts, databases,
+            observability, queues, evaluations, and infrastructure.
+          </p>
+
+          <div class="problem-list">
+            <div class="problem-item">
+              Multiple model providers
+            </div>
+
+            <div class="problem-item">
+              Scattered prompt management
+            </div>
+
+            <div class="problem-item">
+              No visibility into AI costs
+            </div>
+
+            <div class="problem-item">
+              Difficult agent debugging
+            </div>
+
+            <div class="problem-item">
+              RAG and evaluation complexity
+            </div>
+          </div>
+        </div>
+
+        <div class="problem-right reveal">
+
+          <div class="chaos-box">
+
+            <div class="chaos-title">
+              WITHOUT NAVINELABS
+            </div>
+
+            <div class="chaos-lines">
+
+              <div class="chaos-line">
+                OpenAI API
+              </div>
+
+              <div class="arrow">↓</div>
+
+              <div class="chaos-line">
+                Prompt files
+              </div>
+
+              <div class="arrow">↓</div>
+
+              <div class="chaos-line">
+                Vector database
+              </div>
+
+              <div class="arrow">↓</div>
+
+              <div class="chaos-line">
+                Logging service
+              </div>
+
+              <div class="arrow">↓</div>
+
+              <div class="chaos-line">
+                Custom evaluation scripts
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================
+       FEATURES
+  ========================== -->
+
+  <section class="features" id="features">
+    <div class="container">
+
+      <div class="features-header reveal">
+        <div>
+          <div class="section-label">02 / Platform</div>
+          <h2 class="section-heading">
+            Everything your AI app needs.
+          </h2>
+        </div>
+
+        <p class="section-description">
+          One developer platform for the infrastructure behind
+          production-grade AI applications.
+        </p>
+      </div>
+
+      <div class="features-grid">
+
+        <div class="feature-card reveal">
+          <div class="feature-number">01</div>
+          <div class="feature-icon">⌁</div>
+          <h3>Model Gateway</h3>
+          <p>
+            One API for OpenAI, Claude, Gemini, Groq, Ollama and other
+            model providers. Switch models without rewriting your app.
+          </p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-number">02</div>
+          <div class="feature-icon">✦</div>
+          <h3>Agent Runtime</h3>
+          <p>
+            Build tool-using AI agents with controlled execution,
+            memory, retries, limits and structured outputs.
+          </p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-number">03</div>
+          <div class="feature-icon">⌘</div>
+          <h3>Prompt Management</h3>
+          <p>
+            Version, test and roll back prompts without changing
+            application code.
+          </p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-number">04</div>
+          <div class="feature-icon">◌</div>
+          <h3>RAG Pipeline</h3>
+          <p>
+            Build retrieval pipelines with embeddings, vector search,
+            chunking and context management.
+          </p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-number">05</div>
+          <div class="feature-icon">◈</div>
+          <h3>Observability</h3>
+          <p>
+            See every request, prompt, tool call, latency, token and
+            failure in one developer dashboard.
+          </p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-number">06</div>
+          <div class="feature-icon">↗</div>
+          <h3>Evaluations</h3>
+          <p>
+            Compare models and prompts against datasets to measure
+            quality, cost, latency and reliability.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================
+       DASHBOARD
+  ========================== -->
+
+  <section class="dashboard-section" id="developers">
+    <div class="container">
+
+      <div class="reveal">
+        <div class="section-label">03 / Developer experience</div>
+
+        <h2 class="section-heading">
+          Know exactly what your AI is doing.
+        </h2>
+
+        <p class="section-description">
+          Trace requests from user input to final response. Understand
+          model usage, token consumption, latency, failures and cost.
+        </p>
+      </div>
+
+      <div class="dashboard reveal">
+
+        <div class="dashboard-top">
+          <span class="dashboard-dot"></span>
+          <span class="dashboard-dot"></span>
+          <span class="dashboard-dot"></span>
+          <div class="dashboard-url">
+            app.navinelabs.me / overview
+          </div>
+        </div>
+
+        <div class="dashboard-body">
+
+          <aside class="dashboard-sidebar">
+
+            <div class="sidebar-logo">
+              NaviNeLabs
+            </div>
+
+            <div class="sidebar-group">
+              <div class="sidebar-title">Workspace</div>
+              <div class="sidebar-item active">Overview</div>
+              <div class="sidebar-item">Requests</div>
+              <div class="sidebar-item">Agents</div>
+              <div class="sidebar-item">Prompts</div>
+            </div>
+
+            <div class="sidebar-group">
+              <div class="sidebar-title">Intelligence</div>
+              <div class="sidebar-item">Evaluations</div>
+              <div class="sidebar-item">Datasets</div>
+              <div class="sidebar-item">Models</div>
+            </div>
+
+            <div class="sidebar-group">
+              <div class="sidebar-title">System</div>
+              <div class="sidebar-item">API Keys</div>
+              <div class="sidebar-item">Settings</div>
+            </div>
+
+          </aside>
+
+          <main class="dashboard-main">
+
+            <div class="dash-header">
+
+              <div>
+                <h3>Overview</h3>
+                <p>Last 30 days</p>
+              </div>
+
+              <div class="period">
+                Last 30 days ▾
+              </div>
+
+            </div>
+
+            <div class="metrics">
+
+              <div class="metric">
+                <div class="metric-label">Requests</div>
+                <div class="metric-value">1.28M</div>
+                <div class="metric-change">↑ 18.4%</div>
+              </div>
+
+              <div class="metric">
+                <div class="metric-label">Tokens</div>
+                <div class="metric-value">48.2M</div>
+                <div class="metric-change">↑ 12.1%</div>
+              </div>
+
+              <div class="metric">
+                <div class="metric-label">Avg latency</div>
+                <div class="metric-value">1.82s</div>
+                <div class="metric-change">↓ 9.2%</div>
+              </div>
+
+              <div class="metric">
+                <div class="metric-label">Cost</div>
+                <div class="metric-value">$137</div>
+                <div class="metric-change">↓ 6.8%</div>
+              </div>
+
+            </div>
+
+            <div class="chart">
+
+              <div class="chart-label">
+                AI REQUESTS
+              </div>
+
+              <div class="chart-line">
+                <svg viewBox="0 0 1000 200" preserveAspectRatio="none">
+                  <polyline
+                    points="
+                    0,160
+                    80,145
+                    150,152
+                    220,118
+                    300,130
+                    370,88
+                    440,104
+                    510,66
+                    580,85
+                    650,50
+                    720,68
+                    790,37
+                    860,54
+                    930,23
+                    1000,38
+                    "
+                  />
+                </svg>
+              </div>
+
+            </div>
+
+          </main>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================
+       INTEGRATIONS
+  ========================== -->
+
+  <section class="integrations">
+    <div class="container">
+
+      <div class="section-label">04 / Ecosystem</div>
+
+      <h2 class="section-heading" style="margin:auto;">
+        Bring your models.<br />
+        Bring your stack.
+      </h2>
+
+      <p class="section-description" style="margin-left:auto;margin-right:auto;">
+        NaviNeLabs sits between your application and infrastructure.
+        Use the tools you already love.
+      </p>
+
+      <div class="integration-list">
+
+        <div class="integration">OpenAI</div>
+        <div class="integration">Anthropic</div>
+        <div class="integration">Gemini</div>
+        <div class="integration">Groq</div>
+        <div class="integration">Ollama</div>
+        <div class="integration">PostgreSQL</div>
+        <div class="integration">pgvector</div>
+        <div class="integration">Redis</div>
+        <div class="integration">Docker</div>
+        <div class="integration">Kubernetes</div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================
+       OPEN SOURCE
+  ========================== -->
+
+  <section class="opensource" id="opensource">
+    <div class="container">
+
+      <div class="opensource-box reveal">
+
+        <div>
+
+          <div class="section-label">
+            05 / Open source
+          </div>
+
+          <h2>
+            Built in the open.<br />
+            Owned by you.
+          </h2>
+
+          <p>
+            Self-host NaviNeLabs on your own infrastructure. Your data,
+            your models, your configuration. No vendor lock-in.
+          </p>
+
+          <div style="margin-top:28px;">
+            <a
+              href="https://github.com/"
+              target="_blank"
+              class="btn btn-primary"
+            >
+              ★ Star on GitHub
+            </a>
+          </div>
+
+        </div>
+
+        <div class="github-card">
+
+          <div class="github-card-top">
+
+            <div class="github-name">
+              navinelabs/core
+            </div>
+
+            <div class="github-star">
+              ★ Open Source
+            </div>
+
+          </div>
+
+          <div class="github-stats">
+
+            <div class="github-stat">
+              <strong>MIT</strong>
+              <span>License</span>
+            </div>
+
+            <div class="github-stat">
+              <strong>100%</strong>
+              <span>Self-hosted</span>
+            </div>
+
+            <div class="github-stat">
+              <strong>∞</strong>
+              <span>Control</span>
+            </div>
+
+          </div>
+
+          <div style="
+            margin-top:18px;
+            padding:13px;
+            border:1px solid var(--border);
+            border-radius:8px;
+            color:#666;
+            font:11px monospace;
+          ">
+            git clone github.com/navinelabs/core
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================
+       PRICING
+  ========================== -->
+
+  <section class="pricing" id="pricing">
+    <div class="container">
+
+      <div class="pricing-header reveal">
+
+        <div class="section-label">
+          06 / Pricing
+        </div>
+
+        <h2 class="section-heading" style="margin:auto;">
+          Start free.<br />
+          Scale when you need.
+        </h2>
+
+        <p class="section-description">
+          The core platform stays open source. Pay only when you want
+          NaviNeLabs to manage the infrastructure for you.
+        </p>
+
+      </div>
+
+      <div class="pricing-grid">
+
+        <!-- FREE -->
+
+        <div class="price-card reveal">
+
+          <div class="price-name">Open Source</div>
+
+          <div class="price">
+            $0
+            <span>/ forever</span>
+          </div>
+
+          <div class="price-description">
+            Run NaviNeLabs yourself.
+          </div>
+
+          <button class="price-btn">
+            Self Host
+          </button>
+
+          <ul class="price-features">
+            <li>Full core platform</li>
+            <li>Unlimited projects</li>
+            <li>Model gateway</li>
+            <li>Agent runtime</li>
+            <li>Basic observability</li>
+            <li>Docker deployment</li>
+          </ul>
+
+        </div>
+
+
+        <!-- CLOUD -->
+
+        <div class="price-card featured reveal">
+
+          <div class="popular">Best for indie devs</div>
+
+          <div class="price-name">Cloud</div>
+
+          <div class="price">
+            $5
+            <span>/ month</span>
+          </div>
+
+          <div class="price-description">
+            Let us handle the infrastructure.
+          </div>
+
+          <button class="price-btn">
+            Start for $5
+          </button>
+
+          <ul class="price-features">
+            <li>Managed deployment</li>
+            <li>Everything in Open Source</li>
+            <li>Automatic updates</li>
+            <li>Usage dashboard</li>
+            <li>Backups</li>
+            <li>Email support</li>
+          </ul>
+
+        </div>
+
+
+        <!-- PRO -->
+
+        <div class="price-card reveal">
+
+          <div class="price-name">Pro</div>
+
+          <div class="price">
+            $19
+            <span>/ month</span>
+          </div>
+
+          <div class="price-description">
+            For serious AI builders.
+          </div>
+
+          <button class="price-btn">
+            Start Pro
+          </button>
+
+          <ul class="price-features">
+            <li>Everything in Cloud</li>
+            <li>Advanced evaluations</li>
+            <li>AI replay</li>
+            <li>Extended logs</li>
+            <li>Higher limits</li>
+            <li>Priority support</li>
+          </ul>
+
+        </div>
+
+
+        <!-- TEAM -->
+
+        <div class="price-card reveal">
+
+          <div class="price-name">Team</div>
+
+          <div class="price">
+            $49
+            <span>/ month</span>
+          </div>
+
+          <div class="price-description">
+            For teams building together.
+          </div>
+
+          <button class="price-btn">
+            Start Team
+          </button>
+
+          <ul class="price-features">
+            <li>Everything in Pro</li>
+            <li>Team workspaces</li>
+            <li>RBAC</li>
+            <li>Audit logs</li>
+            <li>Shared datasets</li>
+            <li>Priority support</li>
+          </ul>
+
+        </div>
+
+      </div>
+
+      <p style="
+        text-align:center;
+        color:#4d4d4d;
+        font-size:11px;
+        margin-top:25px;
+      ">
+        Enterprise deployments and private infrastructure available on request.
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- =========================
+       FAQ
+  ========================== -->
+
+  <section class="faq">
+    <div class="container">
+
+      <div style="text-align:center;" class="reveal">
+
+        <div class="section-label">
+          07 / FAQ
+        </div>
+
+        <h2 class="section-heading" style="margin:auto;">
+          Questions, answered.
+        </h2>
+
+      </div>
+
+      <div class="faq-wrap">
+
+        <div class="faq-item">
+
+          <button class="faq-question">
+            Is NaviNeLabs really open source?
+            <span class="faq-plus">+</span>
+          </button>
+
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Yes. The core NaviNeLabs platform is designed to be
+              self-hostable and open source. You can run it on your
+              own infrastructure and retain control over your data.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="faq-item">
+
+          <button class="faq-question">
+            Do I need to use a specific AI model?
+            <span class="faq-plus">+</span>
+          </button>
+
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              No. NaviNeLabs is model agnostic. The goal is to let
+              developers work with multiple providers through a
+              consistent interface.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="faq-item">
+
+          <button class="faq-question">
+            Can I self-host it?
+            <span class="faq-plus">+</span>
+          </button>
+
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Yes. The platform is designed around self-hosting.
+              Docker is the initial deployment path, with more
+              deployment options planned as the project grows.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="faq-item">
+
+          <button class="faq-question">
+            What does the $5 plan include?
+            <span class="faq-plus">+</span>
+          </button>
+
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              The $5 Cloud plan is aimed at indie developers who want
+              a managed NaviNeLabs instance without managing servers,
+              updates and backups themselves.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="faq-item">
+
+          <button class="faq-question">
+            Who is NaviNeLabs for?
+            <span class="faq-plus">+</span>
+          </button>
+
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Developers, startups and small teams building AI-powered
+              applications that need more infrastructure than a simple
+              LLM API call but don't want to build the entire platform
+              themselves.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================
+       FINAL CTA
+  ========================== -->
+
+  <section class="final-cta">
+
+    <div class="container reveal">
+
+      <div class="section-label">
+        08 / Start building
+      </div>
+
+      <h2>
+        Stop stitching AI infrastructure together.
+      </h2>
+
+      <p>
+        Build your AI application on infrastructure you can understand,
+        control and own.
+      </p>
+
+      <div class="hero-actions">
+
+        <a href="#pricing" class="btn btn-primary">
+          Get Started →
+        </a>
+
+        <a
+          href="https://github.com/"
+          target="_blank"
+          class="btn btn-secondary"
+        >
+          ★ GitHub
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
+  <footer>
+
+    <div class="container">
+
+      <div class="footer-inner">
+
+        <div class="footer-copy">
+          © 2026 NaviNeLabs. Open-source AI infrastructure.
+        </div>
+
+        <div class="footer-links">
+          <a href="https://navinelabs.me">navinelabs.me</a>
+          <a href="#">Docs</a>
+          <a href="#">GitHub</a>
+          <a href="#">Contact</a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+
+  <script>
+
+    /* -------------------------
+       Mobile Menu
+    ------------------------- */
+
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    menuBtn.addEventListener("click", () => {
+      mobileMenu.classList.toggle("active");
+    });
+
+    document.querySelectorAll(".mobile-menu a").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.remove("active");
+      });
+    });
+
+
+    /* -------------------------
+       FAQ Accordion
+    ------------------------- */
+
+    const faqItems = document.querySelectorAll(".faq-item");
+
+    faqItems.forEach(item => {
+
+      const question = item.querySelector(".faq-question");
+      const answer = item.querySelector(".faq-answer");
+
+      question.addEventListener("click", () => {
+
+        const isOpen = item.classList.contains("open");
+
+        faqItems.forEach(otherItem => {
+          otherItem.classList.remove("open");
+          otherItem.querySelector(".faq-answer").style.maxHeight = null;
+        });
+
+        if (!isOpen) {
+          item.classList.add("open");
+          answer.style.maxHeight = answer.scrollHeight + "px";
+        }
+
+      });
+
+    });
+
+
+    /* -------------------------
+       Scroll Reveal
+    ------------------------- */
+
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+
+        entries.forEach(entry => {
+
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            revealObserver.unobserve(entry.target);
+          }
+
+        });
+
+      },
+      {
+        threshold: 0.12
+      }
+    );
+
+    revealElements.forEach(element => {
+      revealObserver.observe(element);
+    });
+
+
+    /* -------------------------
+       Smooth anchor handling
+    ------------------------- */
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+
+      anchor.addEventListener("click", function(e) {
+
+        const target = document.querySelector(this.getAttribute("href"));
+
+        if (target) {
+          e.preventDefault();
+
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        }
+
+      });
+
+    });
+
+  </script>
+
+</body>
+</html>
+```
